@@ -222,7 +222,7 @@ class Database {
                 $productData['categoryId']
             );
         } else {
-            return null; // Ou lancer une exception selon vos besoins
+            return null;
         }
     }
 }
