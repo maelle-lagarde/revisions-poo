@@ -12,7 +12,7 @@ class Product
     private DateTime $updatedAt;
     private int $categoryId;
 
-    public function __construct(int $id, string $name, array $photos, float $price, string $description, int $quantity, DateTime $createdAt, DateTime $updatedAt, int $categoryId)
+    public function __construct(int $id = null, string $name = null, array $photos = null, float $price = null, string $description = null, int $quantity = null, DateTime $createdAt = null, DateTime $updatedAt = null, int $categoryId = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -68,7 +68,7 @@ class Product
 
     public function getCategoryId() : int
     {
-        return $this->category_id;
+        return $this->categoryId;
     }
 
     // Setters
@@ -112,9 +112,9 @@ class Product
         $this->updatedAt = $updatedAt;
     }
 
-    public function setCategoryId(int $category_id)
+    public function setCategoryId(int $categoryId)
     {
-        $this->categoryId = $category_id;
+        $this->categoryId = $categoryId;
     }
 }
 
@@ -128,7 +128,7 @@ class Category
     private DateTime $updatedAt;
 
 
-    public function __construct(int $id, string $name, string $description, DateTime $createdAt, DateTime $updatedAt)
+    public function __construct(int $id = null, string $name = null, string $description = null, DateTime $createdAt = null, DateTime $updatedAt = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -190,21 +190,49 @@ class Category
     }
 }
 
+class Database {
+    protected $pdo; 
+    public function __construct() 
+    {
+        $this->pdo = new PDO('mysql:host=localhost;dbname=draft-shop;charset=utf8','maelle.lagarde','root');
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
+    }
+
+
+    // Requête pour récupérer le produit avec l'ID 7
+    public function getProductById($productId)
+    {
+        $query = 'SELECT * FROM `product` WHERE id = :id';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $productId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $productData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($productData) {
+            return new Product(
+                $productData['id'],
+                $productData['name'],
+                json_decode($productData['photos'], true),
+                $productData['price'],
+                $productData['description'],
+                $productData['quantity'],
+                new DateTime($productData['createdAt']),
+                new DateTime($productData['updatedAt']),
+                $productData['categoryId']
+            );
+        } else {
+            return null; // Ou lancer une exception selon vos besoins
+        }
+    }
+}
+
 // Exemple d'utilisation
-$category = new Category(1, 'Clothing', 'Clothing category', new DateTime(), new DateTime());
+$database = new Database();
+$product = $database->getProductById(7);
 
-$product = new Product(
-    1,
-    'T-shirt',
-    ['https://picsum.photos/200/300'],
-    1000,
-    'A beautiful T-shirt',
-    10,
-    new DateTime(),
-    new DateTime(),
-    $category->getId()
-);
-
-// Utilisation de var_dump() pour afficher les propriétés
-var_dump($category);
-var_dump($product);
+if ($product) {
+    var_dump($product);
+} else {
+    echo "Le produit n'a pas été trouvé.";
+}

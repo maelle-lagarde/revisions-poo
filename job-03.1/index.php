@@ -12,7 +12,7 @@ class Product
     private DateTime $updatedAt;
     private int $categoryId;
 
-    public function __construct(int $id, string $name, array $photos, float $price, string $description, int $quantity, DateTime $createdAt, DateTime $updatedAt, int $categoryId)
+    public function __construct(int $id = null, string $name = null, array $photos = null, float $price = null, string $description = null, int $quantity = null, DateTime $createdAt = null, DateTime $updatedAt = null, int $categoryId = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -68,7 +68,7 @@ class Product
 
     public function getCategoryId() : int
     {
-        return $this->category_id;
+        return $this->categoryId;
     }
 
     // Setters
@@ -112,9 +112,9 @@ class Product
         $this->updatedAt = $updatedAt;
     }
 
-    public function setCategoryId(int $category_id)
+    public function setCategoryId(int $categoryId)
     {
-        $this->categoryId = $category_id;
+        $this->categoryId = $categoryId;
     }
 }
 
@@ -128,7 +128,7 @@ class Category
     private DateTime $updatedAt;
 
 
-    public function __construct(int $id, string $name, string $description, DateTime $createdAt, DateTime $updatedAt)
+    public function __construct(int $id = null, string $name = null, string $description = null, DateTime $createdAt = null, DateTime $updatedAt = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -191,14 +191,14 @@ class Category
 }
 
 // Exemple d'utilisation
-$category = new Category(1, 'Clothing', 'Clothing category', new DateTime(), new DateTime());
+$category = new Category(1, 'Accessoire', 'Accessoires femme', new DateTime(), new DateTime());
 
 $product = new Product(
     1,
-    'T-shirt',
+    'Écharpe',
     ['https://picsum.photos/200/300'],
     1000,
-    'A beautiful T-shirt',
+    'ÉCHARPE LAINE',
     10,
     new DateTime(),
     new DateTime(),
