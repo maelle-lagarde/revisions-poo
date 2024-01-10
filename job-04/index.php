@@ -1,238 +1,40 @@
 <?php
 
-class Product
-{
-    private int $id;
-    private string $name;
-    private array $photos;
-    private float $price;
-    private string $description;
-    private int $quantity;
-    private DateTime $createdAt;
-    private DateTime $updatedAt;
-    private int $categoryId;
+require_once 'Product.php';
 
-    public function __construct(int $id = null, string $name = null, array $photos = null, float $price = null, string $description = null, int $quantity = null, DateTime $createdAt = null, DateTime $updatedAt = null, int $categoryId = null)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->photos = $photos;
-        $this->price = $price;
-        $this->description = $description;
-        $this->quantity = $quantity;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-        $this->categoryId = $categoryId;
-    }
+try {
+    $pdo = new PDO('mysql:host=localhost;dbname=draft-shop', 'maelle.lagarde', 'root');
 
-    // Getters
-    public function getId() : int
-    {
-        return $this->id;
-    }
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    public function getName() : string
-    {
-        return $this->name;
-    }
+    $stmt = $pdo->prepare('SELECT * FROM product WHERE id = :id');
+    $stmt->bindValue(':id', 7, PDO::PARAM_STR);
+    $stmt->execute();
 
-    public function getPhotos() : array
-    {
-        return $this->photos;
-    }
+    $productData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    public function getPrice() : float
-    {
-        return $this->price;
-    }
+    if ($productData) {
+        
+        $productInstance = new Product(
+            $productData['id'],
+            $productData['name'],
+            $productData['photos'],
+            $productData['price'],
+            $productData['description'],
+            $productData['quantity'],
+            new DateTime($productData['created_at']),
+            new DateTime($productData['updated_at']),
+            $productData['category_id']
+        );
+        echo('<pre>');
+        var_dump($productInstance);
+        echo('</pre>');
 
-    public function getDescription() : string
-    {
-        return $this->description;
+    } else {
+        echo 'Le produit n\'a pas été trouvé!';
     }
-
-    public function getQuantity() : int
-    {
-        return $this->quantity;
-    }
-
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    public function getCategoryId() : int
-    {
-        return $this->categoryId;
-    }
-
-    // Setters
-    public function setId(int $id)
-    {
-        $this->id = $id;
-    }
-
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function setPhotos(array $photos)
-    {
-        $this->photos = $photos;
-    }
-
-    public function setPrice(float $price)
-    {
-        $this->price = $price;
-    }
-
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
-    }
-
-    public function setQuantity(int $quantity)
-    {
-        $this->quantity = $quantity;
-    }
-
-    public function setCreatedAt(DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function setUpdatedAt(DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    public function setCategoryId(int $categoryId)
-    {
-        $this->categoryId = $categoryId;
-    }
+} catch (PDOException $e) {
+    echo 'Erreur de connexion à la base de données : ' . $e->getMessage();
 }
 
-
-class Category 
-{
-    private int $id;
-    private string $name;
-    private string $description;
-    private DateTime $createdAt;
-    private DateTime $updatedAt;
-
-
-    public function __construct(int $id = null, string $name = null, string $description = null, DateTime $createdAt = null, DateTime $updatedAt = null)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
-    }
-
-    // Getters
-    public function getId() : int
-    {
-        return $this->id;
-    }
-
-    public function getName() : string
-    {
-        return $this->name;
-    }
-
-    public function getDescription() : string
-    {
-        return $this->description;
-    }
-
-    public function getCreatedAt() : DateTime
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt() : DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    // Setters
-    public function setId(int $id)
-    {
-        $this->id = $id;
-    }
-
-    public function setName(string $name)
-    {
-        $this->name = $name;
-    }
-
-    public function setDescription(string $description)
-    {
-        $this->description = $description;
-    }
-
-    public function setCreatedAt(DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    public function setUpdatedAt(DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-}
-
-class Database {
-    protected $pdo; 
-    public function __construct() 
-    {
-        $this->pdo = new PDO('mysql:host=localhost;dbname=draft-shop;charset=utf8','maelle.lagarde','root');
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); 
-    }
-
-
-    // Requête pour récupérer le produit avec l'ID 7
-    public function getProductById($productId)
-    {
-        $query = 'SELECT * FROM `product` WHERE id = :id';
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $productId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $productData = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($productData) {
-            return new Product(
-                $productData['id'],
-                $productData['name'],
-                json_decode($productData['photos'], true),
-                $productData['price'],
-                $productData['description'],
-                $productData['quantity'],
-                new DateTime($productData['createdAt']),
-                new DateTime($productData['updatedAt']),
-                $productData['categoryId']
-            );
-        } else {
-            return null;
-        }
-    }
-}
-
-// Exemple d'utilisation
-$database = new Database();
-$product = $database->getProductById(7);
-
-if ($product) {
-    var_dump($product);
-} else {
-    echo "Le produit n'a pas été trouvé.";
-}
+?>
