@@ -11,7 +11,6 @@ try {
     $productToUpdate->setPrice(120.00);
     // $productToUpdate->setDescription('Nouvelle Description');
 
-    // Appelez la méthode update() pour mettre à jour le produit dans la base de données
     $isUpdateSuccessful = $productToUpdate->update();
 
     if ($isUpdateSuccessful) {
