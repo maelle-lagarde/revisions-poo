@@ -4,7 +4,7 @@ class Product
 {
     private int $id;
     private string $name;
-    private array $photos;
+    private string $photos;
     private float $price;
     private string $description;
     private int $quantity;
@@ -12,7 +12,7 @@ class Product
     private DateTime $updatedAt;
     private int $categoryId;
 
-    public function __construct(int $id = null, string $name = null, array $photos = null, float $price = null, string $description = null, int $quantity = null, DateTime $createdAt = null, DateTime $updatedAt = null, int $categoryId = null)
+    public function __construct(int $id = null, string $name = null, string $photos = null, float $price = null, string $description = null, int $quantity = null, DateTime $createdAt = null, DateTime $updatedAt = null, int $categoryId = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -36,7 +36,7 @@ class Product
         return $this->name;
     }
 
-    public function getPhotos() : array
+    public function getPhotos() : string
     {
         return $this->photos;
     }
@@ -82,7 +82,7 @@ class Product
         $this->name = $name;
     }
 
-    public function setPhotos(array $photos)
+    public function setPhotos(string $photos)
     {
         $this->photos = $photos;
     }

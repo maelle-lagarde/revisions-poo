@@ -4,7 +4,7 @@ class Product
 {
     private int $id;
     private string $name;
-    private array $photos;
+    private string $photos;
     private float $price;
     private string $description;
     private int $quantity;
@@ -12,7 +12,7 @@ class Product
     private DateTime $updatedAt;
     private int $categoryId;
 
-    public function __construct(int $id, string $name, array $photos, float $price, string $description, int $quantity, DateTime $createdAt, DateTime $updatedAt, int $categoryId)
+    public function __construct(int $id, string $name, string $photos, float $price, string $description, int $quantity, DateTime $createdAt, DateTime $updatedAt, int $categoryId)
     {
         $this->id = $id;
         $this->name = $name;
@@ -36,7 +36,7 @@ class Product
         return $this->name;
     }
 
-    public function getPhotos() : array
+    public function getPhotos() : string
     {
         return $this->photos;
     }
@@ -68,7 +68,7 @@ class Product
 
     public function getCategoryId() : int
     {
-        return $this->category_id;
+        return $this->categoryId;
     }
 
     // Setters
@@ -82,7 +82,7 @@ class Product
         $this->name = $name;
     }
 
-    public function setPhotos(array $photos)
+    public function setPhotos(string $photos)
     {
         $this->photos = $photos;
     }
